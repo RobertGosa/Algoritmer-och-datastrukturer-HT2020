@@ -14,7 +14,6 @@ public class Queue<Item> implements Iterable<Item> {
         private Item item;
         private Node<Item> next;
         private Node<Item> prev;
-        private boolean iterated = false;
     }
 
     public Queue(){
@@ -27,14 +26,6 @@ public class Queue<Item> implements Iterable<Item> {
 
     public boolean isEmpty(){
         return size == 0;
-    }
-
-    public int size(){
-        return size;
-    }
-
-    public Item peek(){
-        return first.item;
     }
 
     public void enqueue(Item item)
@@ -66,6 +57,7 @@ public class Queue<Item> implements Iterable<Item> {
             first.next = first;
         }
         else{
+            last.next = first;
             first.next = oldfirst;
         }
         size++;
@@ -120,28 +112,42 @@ public class Queue<Item> implements Iterable<Item> {
         return removedNode.item;
     }
 
-    public void enqueueInOrder(Item item){
+    public void enqueueInOrder(Item item) {
         Node<Item> currentNode = first;
         Node<Item> newNode = new Node<Item>();
         newNode.item = item;
-        int counter = 0;
-        if(this.isEmpty()){
+        if (this.isEmpty()) {
             enqueue(item);
             System.out.println(first.item);
-        } else if((Integer) item < (Integer) currentNode.item)  {
+        } else if ((Integer) item < (Integer) currentNode.item) {
             enqueueToFront(item);
         } else {
-            while((Integer) item > (Integer) currentNode.item) {
-                if (counter == size - 1) {
-                    enqueue(item);
+            while ((Integer) item > (Integer) currentNode.item) {
+                if (currentNode.next.item != null && currentNode.next != first) {
+                    currentNode = currentNode.next;
+                } else {
+                    break;
                 }
-                currentNode = currentNode.next;
-                counter++;
             }
-            currentNode.prev.next = newNode;
-            newNode.next = currentNode;
-            newNode.prev = currentNode.prev;
-            currentNode.prev = newNode;
+            if (currentNode == last) {
+                if ((Integer) item > (Integer) last.item) {
+                    enqueue(item);
+                } else {
+                    currentNode.prev.next = newNode;
+                    newNode.next = currentNode;
+                    newNode.prev = currentNode.prev;
+                    currentNode.prev = newNode;
+                    size++;
+                    System.out.println(this.toString());
+                }
+            } else {
+                currentNode.prev.next = newNode;
+                newNode.next = currentNode;
+                newNode.prev = currentNode.prev;
+                currentNode.prev = newNode;
+                size++;
+                System.out.println(this.toString());
+            }
         }
     }
 
