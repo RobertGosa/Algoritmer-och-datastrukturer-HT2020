@@ -8,8 +8,8 @@ public class Main {
         //Uppg5Compare.compare();
         //Uppg6Cutoff.compare();
         //HigherGrade1.invertedSort();
-        HigherGrade2.compare();
-        //System.out.print(HigherGrade2.formatBigNumbers(123456789));
+        //HigherGrade2.compare();
+        HigherGrade3.compare();
     }
 
 }
