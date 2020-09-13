@@ -3,7 +3,7 @@ package com.company;
 import java.util.Scanner;
 
 public class Uppgift4InsertRemoveFrontBack {
-
+    //Prints messages with instructions to the console and informs the user of what data is expected. Also calls the functions using the data
     public static void doubleLinkedCircularList(){
         boolean flag = true;
         Scanner scan = new Scanner(System.in);
