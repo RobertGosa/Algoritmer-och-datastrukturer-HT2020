@@ -2,6 +2,7 @@ import java.util.Scanner;
 
 public class Uppg1Insertionsort {
 
+    //Used to sort an array with insertionSort
     public static void insertionSort(){
         Scanner scan = new Scanner(System.in);
         System.out.println("How many values should be in the array?");

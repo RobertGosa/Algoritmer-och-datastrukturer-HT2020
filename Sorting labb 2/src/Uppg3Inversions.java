@@ -2,6 +2,7 @@ import java.util.Scanner;
 
 public class Uppg3Inversions {
 
+    //Used to sort the array with insertionSort and print all the inversions
     public static void inversionCounter() {
         Scanner scan = new Scanner(System.in);
         System.out.println("How many values should be in the array?");

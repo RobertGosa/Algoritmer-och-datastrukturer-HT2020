@@ -2,6 +2,7 @@ import java.util.Random;
 
 public class Uppg4SignSorting {
 
+    //Used to sort an array so that all the negative values are at the start
     public static void signSort() {
         int ARRAY_SIZE = 10;
         int RANGE = 10;

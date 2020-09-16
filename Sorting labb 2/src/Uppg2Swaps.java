@@ -2,6 +2,7 @@ import java.util.Scanner;
 
 public class Uppg2Swaps {
 
+    //Used to sort and array with insertion sort and count the swaps
     public static void swapCounter() {
         Scanner scan = new Scanner(System.in);
         System.out.println("How many values should be in the array?");

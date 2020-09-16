@@ -1,17 +1,18 @@
 import java.util.Random;
 
 public class HigherGrade3 {
-    static int arraySize = 10;
-    static final int MULTIPLE = 1;
-    static final int RANGE = 1000;
-    static final int TIMES_SORTED = 10;
+    static int arraySize = 100000; //Number of elements in the array
+    static final double MULTIPLE = 1.2; //After every iteration, the array size changes by this much
+    static final int RANGE = 1000; //The values in the array are between 1 and RANGE
+    static final int TIMES_SORTED = 10; //How many times to do the tests
     static long startTime1, startTime2, endTime1, endTime2, totalTime1, totalTime2;
-    public static void compare(){
 
+    //Comparison between execution times of Quicksort with median-of-three and without
+    public static void compare(){
 
         Random random = new Random();
 
-        //Do the test and count time
+        //Do the sorting and count time
         for(int i = 1; i < TIMES_SORTED + 1; i++) {
 
             int arr1[] = new int[arraySize];
@@ -22,34 +23,38 @@ public class HigherGrade3 {
                 arr2[a] = arr1[a] = random.nextInt(RANGE) + 1;
             }
 
-            startTime1 = System.currentTimeMillis();
+            startTime1 = System.nanoTime();
             QuickSort.sort(arr1, true);
-            endTime1 = System.currentTimeMillis();
+            endTime1 = System.nanoTime();
             //QuickSort.printArray(arr1);
 
-            startTime2 = System.currentTimeMillis();
+            startTime2 = System.nanoTime();
             QuickSort.sort(arr2, false);
-            endTime2 = System.currentTimeMillis();
+            endTime2 = System.nanoTime();
             //QuickSort.printArray(arr2);
 
             totalTime1 += endTime1 - startTime1;
             totalTime2 += endTime2 - startTime2;
 
             System.out.println("Sorting number " + i + ", with array size " + formatBigNumbers(arraySize) + " :");
-            System.out.println("MoT time: " + (endTime1 - startTime1) + " milliseconds");
-            System.out.println("No MoT time: " + (endTime2 - startTime2) + " milliseconds");
+            System.out.println("MoT time: " + formatBigNumbers(endTime1 - startTime1) + " nanoseconds");
+            System.out.println("No MoT time: " + formatBigNumbers(endTime2 - startTime2) + " nanoseconds");
             System.out.println("");
             arraySize *= MULTIPLE;
         }
-        System.out.println("MoT total time: " + totalTime1 + " miliseconds");
-        System.out.println("No MoT total time: " + totalTime2 + " miliseconds");
+        System.out.println("MoT total time: " + formatBigNumbers(totalTime1) + " nanoseconds");
+        System.out.println("No MoT total time: " + formatBigNumbers(totalTime2) + " nanoseconds");
         if (totalTime1 < totalTime2) {
-            System.out.println("MoT was faster by " + (((totalTime2) - (totalTime1))) / TIMES_SORTED + " miliseconds on average");
+            System.out.println("MoT was faster by " + formatBigNumbers(((totalTime2) - (totalTime1)) / TIMES_SORTED) + " nanoseconds on average");
         } else {
-            System.out.println("No MoT was faster by " + (((totalTime1) - (totalTime2))) / TIMES_SORTED + " miliseconds on average");
+            System.out.println("No MoT was faster by " + formatBigNumbers(((totalTime1) - (totalTime2)) / TIMES_SORTED) + " nanoseconds on average");
         }
     }
 
+    /**
+     * Sorts the elements using insertion sort
+     * @param array the array to be sorted
+     */
     public static void insertionSort(int[] array){
         for(int i = 1; i < array.length; i++){
             for(int j = i; j > 0 && array[j-1] > array[j]; j--){
@@ -60,7 +65,11 @@ public class HigherGrade3 {
         }
     }
 
-    public static StringBuilder formatBigNumbers(int bigNumber) {
+    /**
+     * Makes 1000000 look like 1,000,000
+     * @param bigNumber the number to be formatted
+     */
+    public static StringBuilder formatBigNumbers(long bigNumber) {
         StringBuilder sb = new StringBuilder();
         int counter = 1;
 

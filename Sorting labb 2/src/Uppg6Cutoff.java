@@ -1,13 +1,14 @@
 import java.util.Random;
 
 public class Uppg6Cutoff {
-    static final int ARRAY_SIZE = 10000000;
+    static final int ARRAY_SIZE = 10_000_000;
     static final int RANGE = 1000;
     static final int TIMES_SORTED = 30;
     static int[] fastestCutoff = new int[TIMES_SORTED];
     static int counter = 0;
     static long startTime, endTime, time, fastestTime = -1;
 
+    //Used to compare the execution times of mergeSort with different cutoffs
     public static void compare(){
 
         int arr1[] = new int[ARRAY_SIZE];
@@ -24,10 +25,13 @@ public class Uppg6Cutoff {
                 arr2[a] = arr1[a];
             }
 
-            startTime = System.currentTimeMillis();
+            startTime = System.nanoTime();
             MergeSort.sort(arr2, i);
-            endTime = System.currentTimeMillis();
+            endTime = System.nanoTime();
             //MergeSort.printArray(arr2);
+
+            //System.out.println((i + " " + (endTime - startTime)));
+
 
             time = endTime - startTime;
             if(fastestTime == -1 || time < fastestTime){
@@ -43,11 +47,11 @@ public class Uppg6Cutoff {
             }
 
             System.out.println("Cutoff value " + i + ":");
-            System.out.println("Time: " + (endTime - startTime) + " milliseconds");
+            System.out.println("Time: " + formatBigNumbers(endTime - startTime) + " nanoseconds");
             System.out.println("");
         }
 
-        System.out.print("Fastest time was " + fastestTime + "ms with cutoff ");
+        System.out.print("Fastest time was " + formatBigNumbers(fastestTime) + " nanoseconds with cutoff ");
         for(int i = 0; i < fastestCutoff.length; i++){
             if(fastestCutoff[i] != 0){
                 System.out.print((fastestCutoff[i] - 1) + " "); // Because the saved value is +1 we decrease it by 1 before printing
@@ -55,4 +59,28 @@ public class Uppg6Cutoff {
         }
 
     }
+
+    /**
+     * Makes 1000000 look like 1,000,000
+     * @param bigNumber the number to be formatted
+     */
+    public static StringBuilder formatBigNumbers(long bigNumber) {
+        StringBuilder sb = new StringBuilder();
+        int counter = 1;
+
+        while (bigNumber > 0) {
+            sb.insert(0, bigNumber % 10 );
+            bigNumber = bigNumber / 10;
+            if(counter == 3){
+                sb.insert(0, ",");
+                counter = 0;
+            }
+            counter++;
+        }
+        if(sb.indexOf(",") == 0) {
+            sb.delete(0,1);
+        }
+        return sb;
+    }
+
 }
