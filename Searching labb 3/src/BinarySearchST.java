@@ -1,31 +1,36 @@
+import java.util.NoSuchElementException;
+
+//The Binary Search Symbol Table following the example in the course book
 public class BinarySearchST<Key extends Comparable<Key>, Value> {
-    private static final int INIT_CAPACITY = 2;
+    private static final int INIT_CAPACITY = 2; //starting capacity
     private Key[] keys;
     private Value[] vals;
-    private int n = 0;
+    private int n = 0; //number of elements
 
     /**
-     * Initializes an empty symbol table.
+     * Constructor
      */
     public BinarySearchST() {
         this(INIT_CAPACITY);
-    }
+    } //constructor
 
     /**
-     * Initializes an empty symbol table with the specified initial capacity.
-     *
-     * @param capacity the maximum capacity
+     * Constructor
+     * @param capacity size of the symbol table
      */
-    public BinarySearchST(int capacity) {
+    public BinarySearchST(int capacity) { //constructor
         keys = (Key[]) new Comparable[capacity];
         vals = (Value[]) new Object[capacity];
     }
 
-    // resize the underlying arrays
+    /**
+     * Resize the symbol table
+     * @param capacity the new size
+     */
     private void resize(int capacity) {
-        Key[] tempk = (Key[]) new Comparable[capacity];
+        Key[]   tempk = (Key[])   new Comparable[capacity]; //make new arrays
         Value[] tempv = (Value[]) new Object[capacity];
-        for (int i = 0; i < n; i++) {
+        for (int i = 0; i < n; i++) { //put all the values in the arrays
             tempk[i] = keys[i];
             tempv[i] = vals[i];
         }
@@ -34,19 +39,16 @@ public class BinarySearchST<Key extends Comparable<Key>, Value> {
     }
 
     /**
-     * Returns the number of key-value pairs in this symbol table.
-     *
-     * @return the number of key-value pairs in this symbol table
+     * Returns the size of the symbol table
+     * @return the size
      */
     public int size() {
         return n;
     }
 
     /**
-     * Returns true if this symbol table is empty.
-     *
-     * @return {@code true} if this symbol table is empty;
-     * {@code false} otherwise
+     * Checks if the symbol table is empty
+     * @return true is the symbol table is empty;
      */
     public boolean isEmpty() {
         return size() == 0;
@@ -54,120 +56,90 @@ public class BinarySearchST<Key extends Comparable<Key>, Value> {
 
 
     /**
-     * Does this symbol table contain the given key?
+     * Checks if the key is already in the ST
      *
-     * @param key the key
-     * @return {@code true} if this symbol table contains {@code key} and
-     * {@code false} otherwise
-     * @throws IllegalArgumentException if {@code key} is {@code null}
+     * @param  key the key to look for
+     * @return true is the key is found in the array
      */
     public boolean contains(Key key) {
-        if (key == null) throw new IllegalArgumentException("argument to contains() is null");
         return get(key) != null;
     }
 
     /**
-     * Returns the value associated with the given key in this symbol table.
-     *
-     * @param key the key
-     * @return the value associated with the given key if the key is in the symbol table
-     * and {@code null} if the key is not in the symbol table
-     * @throws IllegalArgumentException if {@code key} is {@code null}
+     * Find the value that the given key has
+     * @param  key the key to look for
+     * @return the value of the key
      */
     public Value get(Key key) {
-        if (key == null) throw new IllegalArgumentException("argument to get() is null");
         if (isEmpty()) return null;
-        int i = rank(key);
-        if (i < n && keys[i].compareTo(key) == 0) return vals[i];
-        return null;
+        int i = rank(key); //find the position of the key
+        if (i < n && keys[i].compareTo(key) == 0) return vals[i]; //if position is in the array and the key value matches the given key, return the value of the key
+        return null; //if the key is not in the array, return null
     }
 
     /**
-     * Returns the number of keys in this symbol table strictly less than {@code key}.
-     *
-     * @param key the key
-     * @return the number of keys in the symbol table strictly less than {@code key}
-     * @throws IllegalArgumentException if {@code key} is {@code null}
+     * Find the position of the key
+     * @param  key the key to look for
+     * @return the position of the key
      */
     public int rank(Key key) {
-        if (key == null) throw new IllegalArgumentException("argument to rank() is null");
-
-        int lo = 0, hi = n - 1;
+        int lo = 0, hi = n-1;
         while (lo <= hi) {
-            int mid = lo + (hi - lo) / 2;
-            int cmp = key.compareTo(keys[mid]);
-            if (cmp < 0) hi = mid - 1;
-            else if (cmp > 0) lo = mid + 1;
-            else return mid;
+            int mid = lo + (hi - lo) / 2; //find the middle
+            int cmp = key.compareTo(keys[mid]); //compare to the middle
+            if      (cmp < 0) hi = mid - 1; //if less than the middle, look at the first half
+            else if (cmp > 0) lo = mid + 1; //if higher than the middle, look at the second half
+            else return mid;  //else, return the position
         }
         return lo;
     }
 
 
+
     /**
-     * Inserts the specified key-value pair into the symbol table, overwriting the old
-     * value with the new value if the symbol table already contains the specified key.
-     * Deletes the specified key (and its associated value) from this symbol table
-     * if the specified value is {@code null}.
-     *
-     * @param key the key
-     * @param val the value
-     * @throws IllegalArgumentException if {@code key} is {@code null}
+     * Puts the key and value in the ST
+     * @param  key the key
+     * @param  val the value
      */
-    public void put(Key key, Value val) {
-        if (key == null) throw new IllegalArgumentException("first argument to put() is null");
+    public void put(Key key, Value val)  {
 
-        int i = rank(key);
+        int i = rank(key); //find the position the key should be on
 
-        if (val == null) {
-            delete(key);
-            return;
-        }
-
-        // key is already in table
-        if (i < n && keys[i].compareTo(key) == 0) {
+        if (i < n && keys[i].compareTo(key) == 0) { //if the key is already in the ST, update the value
             vals[i] = val;
             return;
         }
 
-        // insert new key-value pair
-        if (n == keys.length) resize(2 * keys.length);
+        if (n == keys.length) resize(2*keys.length); //if the keys are not equal, then we need to insert something new. If no more space, double the array size
 
-        for (int j = n; j > i; j--) {
-            keys[j] = keys[j - 1];
-            vals[j] = vals[j - 1];
+        for (int j = n; j > i; j--)  { //move all the keys up one position
+            keys[j] = keys[j-1];
+            vals[j] = vals[j-1];
         }
-        keys[i] = key;
+        keys[i] = key; //insert the key and value
         vals[i] = val;
         n++;
     }
 
-    public void delete(Key key) {
-        if (key == null) throw new IllegalArgumentException("argument to delete() is null");
-        if (isEmpty()) return;
-
-        // compute rank
-        int i = rank(key);
-
-        // key not in table
-        if (i == n || keys[i].compareTo(key) != 0) {
-            return;
-        }
-
-        for (int j = i; j < n-1; j++)  {
-            keys[j] = keys[j+1];
-            vals[j] = vals[j+1];
-        }
-
-        n--;
-        keys[n] = null;  // to avoid loitering
-        vals[n] = null;
-
-        // resize if 1/4 full
-        if (n > 0 && n == keys.length/4) resize(keys.length/2);
+    /**
+     * Returns all keys in this symbol table
+     * @return all the keys
+     */
+    public Iterable<Key> keys() {
+        Queue<Key> queue = new Queue<Key>(); //make a queue to return
+        for (int i = 0; i < n; i++) //for each key
+            queue.enqueue(keys[i]); //add to queue
+        return queue;
     }
 
-    public Key[] getKeys() {
-        return keys;
+    /**
+     * Returns all values in this symbol table
+     * @return all the values
+     */
+    public Iterable<Value> values() {
+        Queue<Value> queue = new Queue<Value>(); //make a queue to return
+        for (int i = 0; i < n; i++) //for each key
+            queue.enqueue(vals[i]); //add to queue
+        return queue;
     }
 }
